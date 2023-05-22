@@ -1,0 +1,25 @@
+<!-- <% filterStatusHelper=(statusFilter)=> {%>
+    <% statusFilter.forEach((item)=>{ %>
+        <a class="btn m-b-sm btn-<%= item.class %> btn-sm" href="admin123/item/all">
+            <%= item.name.toUpperCase() %> (<%= item.count %>)
+        </a>
+        <% }) %>
+            <% } %> -->
+
+<% filterStatusHelper=( statusFilter,keyWordSearch)=> {
+    let xhtmlResult = '';
+    statusFilter.forEach((item)=> {
+    if(!keyWordSearch){
+    xhtmlResult += `<a class="btn m-b-sm btn-${item.class} btn-sm"
+        href="${systemConfig.prefixAdmin}/items/status/${item.name.toLowerCase()}">
+        ${item.name.toUpperCase() + " (" + item.count +")" }</a> `;
+    }else{
+    xhtmlResult += `<a class="btn m-b-sm btn-${item.class} btn-sm"
+        href="${systemConfig.prefixAdmin}/items/status/${item.name.toLowerCase()}?keyWordSearch=${keyWordSearch}">
+        ${item.name.toUpperCase() + " (" + item.count +")" }</a> `;
+    }
+
+    })
+    return xhtmlResult;
+    }
+    %>

@@ -1,0 +1,19 @@
+<% statusHelper=( status,id,currentPage,currentStatus)=> {
+    let xhtmlStatus = '';
+
+    let link ='';
+
+    if(currentStatus === "all"){
+    link = `${systemConfig.prefixAdmin}/items/change-status/${id}/${status}?page=${currentPage}`;
+    }else{
+    link = `${systemConfig.prefixAdmin}/items/change-status/${id}/${status}?page=1`;
+    }
+
+    if(status === "active") {
+    xhtmlStatus = '<span class="label label-success">active</span>';
+    }else if (status === "inactive") {
+    xhtmlStatus = '<span class="label label-warning">inactive</span>';
+    }
+    return `<a href="${link}">${xhtmlStatus}</a>`;
+    }
+    %>

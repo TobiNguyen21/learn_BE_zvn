@@ -1,0 +1,73 @@
+<%paginationHelper=(pagination,currentStatus,keyWordSearch)=> {
+    const {totalItems,totalPages,limit,currentPage,pageRanges}=pagination;
+
+    const to = (limit * currentPage) > totalItems ? totalItems : limit * currentPage;
+    const from = limit * currentPage - limit + 1;
+
+    let xhtmlPagination = '';
+
+    if(totalPages > 1) {
+    let xhtmlStart = '<li class="disabled"><a>Start</a></li>';
+    let xhtmlPrevious = '<li class="disabled"><a>Previous</a></li>';
+    let xhtmlPages = '';
+    let xhtmlNext = '<li class="disabled"><a>Next</a></li>' ;
+    let xhtmlEnd = '<li class="disabled"><a>End</a></li>';
+
+    let link = `${systemConfig.prefixAdmin}/items/status/${currentStatus}`;
+    if(keyWordSearch !== '') link += '?keyWordSearch=' + keyWordSearch + '&page=';
+    else link += '?page=';
+
+    if(currentPage > 1){
+    xhtmlStart = `<li><a href="${link}1">Start</a></li>`;
+    xhtmlPrevious = `<li><a href="${link}${currentPage-1}">Previous</a></li>`;
+    }
+
+    if(currentPage < totalPages) { xhtmlEnd=`<li><a href="${link}${totalPages}">End</a>
+        </li>`;
+        xhtmlNext = `<li><a href="${link}${currentPage+1}">Next</a>
+        </li>`;
+        }
+
+        let mid = Math.ceil(pageRanges/2);
+        if(currentPage>mid && totalPages >= pageRanges) mid = currentPage;
+
+        let start = Math.floor(mid - (pageRanges / 2)+1);
+        let end = start + pageRanges -1;
+
+        end = end >= totalPages ? totalPages : end;
+        start = end >= totalPages && totalPages >= pageRanges ? end-pageRanges+1: start;
+
+
+        for(let i=start;i<=end;i++){ if(i===currentPage){ xhtmlPages +=`<li class="active"><a>${i}</a></li>`
+            }else{
+            xhtmlPages +=`<li><a href="${link}${i}">${i}</a></li>`;
+            }
+            }
+
+            xhtmlPagination = '<ul class="pagination text-center">' + xhtmlStart + xhtmlPrevious + xhtmlPages +
+                xhtmlNext +
+                xhtmlEnd + '</ul>';
+            }
+
+
+            return `<div class="panel panel-info" id="pagination">
+                <div class="panel-heading">
+                    Pagination
+                    <span>^</span>
+                    <span class="label label-warning">Total pages: ${totalPages}</span>
+                    <span class="label label-danger">Total entries: ${totalItems}</span>
+                </div>
+                <div class="panel-body">
+                    <div class="infor-pagination">
+                        <p>Limiting number of elements on the page: <span>${limit}</span></p>
+                        <p>Showing <span> ${from} </span> to <span>${to}</span> of <span>${totalItems}</span> entries
+                        </p>
+                    </div>
+                    <div class="ad-pagination">
+                        ${xhtmlPagination}
+                    </div>
+                </div>
+            </div>`;
+
+
+            }%>
