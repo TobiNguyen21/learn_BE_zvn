@@ -5,6 +5,7 @@ const Item = require('./../../schemas/items');
 const UtilsHelpers = require('./../../helpers/utils');
 const ParamsHelpers = require('./../../helpers/params');
 const systemConfig = require('./../../configs/system');
+const { updateOne } = require('./../../schemas/items');
 
 const linkIndex = `/${systemConfig.prefixAdmin}/items/`;
 
@@ -70,6 +71,7 @@ router.get('/change-status/:id/:status', async (req, res) => {
 router.post('/change-status/:status', async (req, res) => {
     let currentStatus = ParamsHelpers.getParamStatus(req.params, 'status', 'active');
     let listId = req.body.cid;
+    // console.log(`listId ${listId}`);
 
     try {
         const result = await Item.updateMany({ _id: listId }, { status: currentStatus });
@@ -78,11 +80,10 @@ router.post('/change-status/:status', async (req, res) => {
         console.log(error);
     }
 
-    console.log(listId);
     res.redirect(linkIndex + `status/all?page=1`);
 });
 
-
+// delete a element
 router.get('/delete/:id/:status', async (req, res) => {
     let currentStatus = ParamsHelpers.getParamStatus(req.params, 'status', 'active');
     let currentPage = +ParamsHelpers.getParamStatus(req.query, 'page', '1');
@@ -96,6 +97,42 @@ router.get('/delete/:id/:status', async (req, res) => {
     }
 
     res.redirect(linkIndex + `status/${currentStatus}?page=${currentPage}`);
+});
+
+// delete multi elements
+router.post('/delete', async (req, res) => {
+    const listId = req.body.cid;
+    console.log(`listID: ${listId}`);
+    try {
+        const result = await Item.deleteMany({ _id: listId });
+        console.log(result);
+    } catch (error) {
+        console.log(error);
+    }
+    res.redirect(linkIndex);
+});
+
+// change multi change-ordering
+router.post('/change-ordering', async (req, res) => {
+    let listId = Array.isArray(req.body.cid) ? req.body.cid : [req.body.cid];
+    let orderings = Array.isArray(req.body.ordering) ? req.body.ordering : [req.body.ordering];
+
+    orderings.forEach((element, index) => {
+        orderings[index] = +element;
+    });
+
+    console.log(listId);
+    console.log(orderings);
+
+    await listId.forEach(async (id, index) => {
+        try {
+            await Item.updateOne({ _id: id }, { ordering: orderings[index] });
+        } catch (error) {
+            console.log(error);
+        }
+    });
+
+    res.redirect(linkIndex);
 });
 
 

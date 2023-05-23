@@ -6,16 +6,16 @@
         <% }) %>
             <% } %> -->
 
-<% filterStatusHelper=( statusFilter,keyWordSearch)=> {
+<% filterStatusHelper=( collection,statusFilter,keyWordSearch)=> {
     let xhtmlResult = '';
     statusFilter.forEach((item)=> {
     if(!keyWordSearch){
     xhtmlResult += `<a class="btn m-b-sm btn-${item.class} btn-sm"
-        href="${systemConfig.prefixAdmin}/items/status/${item.name.toLowerCase()}">
+        href="${systemConfig.prefixAdmin}/${collection}/status/${item.name.toLowerCase()}">
         ${item.name.toUpperCase() + " (" + item.count +")" }</a> `;
     }else{
     xhtmlResult += `<a class="btn m-b-sm btn-${item.class} btn-sm"
-        href="${systemConfig.prefixAdmin}/items/status/${item.name.toLowerCase()}?keyWordSearch=${keyWordSearch}">
+        href="${systemConfig.prefixAdmin}/${collection}/status/${item.name.toLowerCase()}?keyWordSearch=${keyWordSearch}">
         ${item.name.toUpperCase() + " (" + item.count +")" }</a> `;
     }
 
