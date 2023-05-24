@@ -4,6 +4,9 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+const session = require('express-session');
+const flash = require('connect-flash');
+
 const app = express();
 
 const expressLayouts = require('express-ejs-layouts');
@@ -11,6 +14,8 @@ const mongoose = require('mongoose');
 
 const systemConfig = require('./configs/system');
 const connection = require('./configs/database');
+
+
 
 
 // mongoose.connect('mongodb+srv://tobinguyen399:TobiNguyen399@cluster0.tgoqjlv.mongodb.net/?retryWrites=true&w=majority');
@@ -45,6 +50,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 60000 }
+}));
+app.use(flash());
+
+
 
 //local constiable
 app.locals.systemConfig = systemConfig;
@@ -53,7 +67,6 @@ app.locals.systemConfig = systemConfig;
 app.use(`/${systemConfig.prefixAdmin}`, require('./routes/backend'));
 app.use('/', require('./routes/frontend'));
 
-console.log(``);
 //==========================================================================================//
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

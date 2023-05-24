@@ -37,13 +37,17 @@ router.get('(/status/:status)?', async (req, res, next) => {
     let items = await Item.find(filter).sort({ ordering: 'asc' }).skip(offset).limit(pagination.limit);
     let statusFilter = await UtilsHelpers.craeteFilterStatus(currentStatus);
 
+    let message = req.flash('message');
+    //console.log(`message: ${message.length}`);
+
     res.render('pages/items/list.ejs', {
         pageTitle: 'Item List Page',
         items: items,
         statusFilter: statusFilter,
         currentStatus: currentStatus,
         keyWordSearch: keyWordSearch,
-        pagination: pagination
+        pagination: pagination,
+        message: message
     });
 });
 
@@ -58,8 +62,9 @@ router.get('/change-status/:id/:status', async (req, res) => {
 
     try {
         const result = await Item.updateOne({ _id: id }, { status: status });
-        console.log(result);
+        req.flash('message', 'change status success');
     } catch (error) {
+        req.flash('message', 'change status fail');
         console.log(error);
     }
 
@@ -75,8 +80,9 @@ router.post('/change-status/:status', async (req, res) => {
 
     try {
         const result = await Item.updateMany({ _id: listId }, { status: currentStatus });
-        console.log(result);
+        req.flash('message', 'change multiple status succeed');
     } catch (error) {
+        req.flash('message', 'change multiple status failed');
         console.log(error);
     }
 
@@ -91,8 +97,9 @@ router.get('/delete/:id/:status', async (req, res) => {
 
     try {
         const result = await Item.deleteOne({ _id: id });
-        console.log(result);
+        req.flash('message', 'deleted element succeed');
     } catch (error) {
+        req.flash('message', 'deleted element failed');
         console.log(error);
     }
 
@@ -105,8 +112,9 @@ router.post('/delete', async (req, res) => {
     console.log(`listID: ${listId}`);
     try {
         const result = await Item.deleteMany({ _id: listId });
-        console.log(result);
+        req.flash('message', 'deleted multiple element succeed');
     } catch (error) {
+        req.flash('message', 'deleted multiple element failed');
         console.log(error);
     }
     res.redirect(linkIndex);
@@ -124,20 +132,28 @@ router.post('/change-ordering', async (req, res) => {
     console.log(listId);
     console.log(orderings);
 
+    let countError = 0;
+
     await listId.forEach(async (id, index) => {
         try {
             await Item.updateOne({ _id: id }, { ordering: orderings[index] });
         } catch (error) {
+            countError++;
             console.log(error);
         }
     });
+
+    if (countError === 0) req.flash('message', 'change multi ordering succeed');
+    else req.flash('message', 'change multi ordering failed');
 
     res.redirect(linkIndex);
 });
 
 
 router.get('/add', (req, res, next) => {
-    res.render('pages/items/add.ejs', { pageTitle: 'Item Add Page' });
+    console.log(`helloadd`);
+    req.flash('message', 'Add notifier');
+    res.redirect(linkIndex);
 });
 
 module.exports = router;
