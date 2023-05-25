@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
+var { validationResult } = require('express-validator');
 
 const Item = require('./../../schemas/items');
 const UtilsHelpers = require('./../../helpers/utils');
 const ParamsHelpers = require('./../../helpers/params');
 const systemConfig = require('./../../configs/system');
 const { updateOne } = require('./../../schemas/items');
+const { validateItem } = require('./../../validates/validator');
 
 const linkIndex = `/${systemConfig.prefixAdmin}/items/`;
 
@@ -153,26 +155,40 @@ router.post('/change-ordering', async (req, res) => {
 router.get('/form(/:id)?', async (req, res, next) => {
     const id = ParamsHelpers.getParamStatus(req.params, 'id', '');
     let item = { name: '', ordering: 0, status: 'novalue' };
+    let errors = null;
     if (id) {
         item = await Item.findById(id);
-        res.render('pages/items/form', { pageTitle: "Edit Item", item });
+        res.render('pages/items/form', { pageTitle: "Edit Item", item, errors });
     }
-    res.render('pages/items/form', { pageTitle: "Add Item", item });
+    res.render('pages/items/form', { pageTitle: "Add Item", item, errors });
 });
 
 // save form ---> using for edit and add item
-router.post('/save', async (req, res) => {
+router.post('/save', validateItem(), async (req, res) => {
     const item = req.body;
 
+    const errors = validationResult(req).errors;
+    console.log(`ERR: `, errors);
+
+
     if (item.id) { // Edit
-        console.log(`Data Edit: `, item);
-        await Item.updateOne({ _id: item.id }, { name: item.name, ordering: item.ordering, status: item.status });
-        req.flash('message', 'edit item succeed')
+        if (errors.length !== 0) {
+            res.render(`pages/items/form`, { pageTitle: 'Edit Item', item, errors });
+        } else {
+            console.log(`Data Edit: `, item);
+            await Item.updateOne({ _id: item.id }, { name: item.name, ordering: item.ordering, status: item.status });
+            req.flash('message', 'edit item succeed')
+        }
+
     } else { //Add
-        delete item.id;
-        console.log(`Data Add: `, item);
-        await Item.create(item);
-        req.flash('message', 'add new item succeed')
+        if (errors.length !== 0) {
+            res.render(`pages/items/form`, { pageTitle: 'Add Item', item, errors });
+        } else {
+            delete item.id;
+            console.log(`Data Add: `, item);
+            await Item.create(item);
+            req.flash('message', 'add new item succeed')
+        }
     }
     res.redirect(linkIndex);
 });

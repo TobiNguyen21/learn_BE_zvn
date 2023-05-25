@@ -7,12 +7,17 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-lg-6">
-                        <div class="alert alert-danger" role="alert">
-                            <ul>
-                                <li>Name: không được rỗng</li>
-                                <li>Status: chọn một trạng thái</li>
-                            </ul>
-                        </div>
+                        <% if(errors!==null) {%>
+                            <div class="alert alert-danger" role="alert">
+                                <ul>
+                                    <% errors.forEach(function(error) { %>
+                                        <li>
+                                            <%= error.msg %>
+                                        </li>
+                                        <% }) %>
+                                </ul>
+                            </div>
+                            <% } %>
                     </div>
                 </div>
                 <div class="row">
