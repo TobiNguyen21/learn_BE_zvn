@@ -10,13 +10,10 @@ const flash = require('connect-flash');
 const app = express();
 
 const expressLayouts = require('express-ejs-layouts');
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 
 const systemConfig = require('./app/configs/system');
 const connection = require('./app/configs/database');
-
-
-
 
 // mongoose.connect('mongodb+srv://tobinguyen399:TobiNguyen399@cluster0.tgoqjlv.mongodb.net/?retryWrites=true&w=majority');
 // //connection mongodb
@@ -38,7 +35,7 @@ const connection = require('./app/configs/database');
   }
 })()
 
-console.log(`dir: ${__dirname}`);
+// console.log(`dir: ${__dirname}`);
 // view engine setup
 app.set('views', path.join(__dirname, '/app/views'));
 app.set('view engine', 'ejs');
