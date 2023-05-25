@@ -12,8 +12,8 @@ const app = express();
 const expressLayouts = require('express-ejs-layouts');
 const mongoose = require('mongoose');
 
-const systemConfig = require('./configs/system');
-const connection = require('./configs/database');
+const systemConfig = require('./app/configs/system');
+const connection = require('./app/configs/database');
 
 
 
@@ -38,9 +38,9 @@ const connection = require('./configs/database');
   }
 })()
 
-
+console.log(`dir: ${__dirname}`);
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, '/app/views'));
 app.set('view engine', 'ejs');
 app.use(expressLayouts);
 app.set('layout', 'backend.ejs')
@@ -64,8 +64,8 @@ app.use(flash());
 app.locals.systemConfig = systemConfig;
 
 //Setup router
-app.use(`/${systemConfig.prefixAdmin}`, require('./routes/backend'));
-app.use('/', require('./routes/frontend'));
+app.use(`/${systemConfig.prefixAdmin}`, require('./app/routes/backend'));
+app.use('/', require('./app/routes/frontend'));
 
 //==========================================================================================//
 // catch 404 and forward to error handler

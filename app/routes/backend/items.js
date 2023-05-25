@@ -1,15 +1,18 @@
 const express = require('express');
 const router = express.Router();
-var { validationResult } = require('express-validator');
+const { validationResult } = require('express-validator');
 
 const Item = require('./../../schemas/items');
 const UtilsHelpers = require('./../../helpers/utils');
 const ParamsHelpers = require('./../../helpers/params');
 const systemConfig = require('./../../configs/system');
-const { updateOne } = require('./../../schemas/items');
 const { validateItem } = require('./../../validates/validator');
 
 const linkIndex = `/${systemConfig.prefixAdmin}/items/`;
+const pageTitleIndex = 'Item Management';
+const pageTitleAdd = pageTitleIndex + ' - Add';
+const pageTitleEdit = pageTitleIndex + ' - Edit';
+const folderView = 'pages/items';
 
 // GET users listing. 
 router.get('(/status/:status)?', async (req, res, next) => {
@@ -42,7 +45,7 @@ router.get('(/status/:status)?', async (req, res, next) => {
     let message = req.flash('message');
     //console.log(`message: ${message.length}`);
 
-    res.render('pages/items/list.ejs', {
+    res.render(`${folderView}/list.ejs`, {
         pageTitle: 'Item List Page',
         items: items,
         statusFilter: statusFilter,
@@ -158,9 +161,9 @@ router.get('/form(/:id)?', async (req, res, next) => {
     let errors = null;
     if (id) {
         item = await Item.findById(id);
-        res.render('pages/items/form', { pageTitle: "Edit Item", item, errors });
+        res.render(`${folderView}/form`, { pageTitle: pageTitleEdit, item, errors });
     }
-    res.render('pages/items/form', { pageTitle: "Add Item", item, errors });
+    res.render(`${folderView}/form`, { pageTitle: pageTitleAdd, item, errors });
 });
 
 // save form ---> using for edit and add item
@@ -173,21 +176,21 @@ router.post('/save', validateItem(), async (req, res) => {
 
     if (item.id) { // Edit
         if (errors.length !== 0) {
-            res.render(`pages/items/form`, { pageTitle: 'Edit Item', item, errors });
+            res.render(`${folderView}/form`, { pageTitle: pageTitleEdit, item, errors });
         } else {
             console.log(`Data Edit: `, item);
             await Item.updateOne({ _id: item.id }, { name: item.name, ordering: item.ordering, status: item.status });
-            req.flash('message', 'edit item succeed')
+            req.flash('message', 'edit item succeed');
         }
 
     } else { //Add
         if (errors.length !== 0) {
-            res.render(`pages/items/form`, { pageTitle: 'Add Item', item, errors });
+            res.render(`${folderView}/form`, { pageTitle: pageTitleAdd, item, errors });
         } else {
             delete item.id;
             console.log(`Data Add: `, item);
             await Item.create(item);
-            req.flash('message', 'add new item succeed')
+            req.flash('message', 'add new item succeed');
         }
     }
     res.redirect(linkIndex);
