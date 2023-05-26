@@ -1,50 +1,51 @@
-<div class="row">
-    <div class="col-lg-12">
-        <div class="panel panel-info">
-            <div class="panel-heading">
-                Search &amp; Filter
-                <a href="<%= systemConfig.prefixAdmin%>/items">
-                    <span id="icon-reload" class="glyphicon glyphicon-refresh"></span>
-                </a>
-            </div>
+<% const collection="items" ; const linkPrefix=systemConfig.prefixAdmin + `/${collection}`; %>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    Search &amp; Filter
+                    <a href="<%= linkPrefix%>">
+                        <span id="icon-reload" class="glyphicon glyphicon-refresh"></span>
+                    </a>
+                </div>
 
-            <div class="panel-body">
-                <div class="row">
-                    <div class="status-list col-sm-6 pl0">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="status-list col-sm-6 pl0">
 
-                        <a class="btn m-b-sm btn-success btn-sm" href="<%= systemConfig.prefixAdmin%>/items/all">
-                            ALL (4)
-                        </a>
+                            <a class="btn m-b-sm btn-success btn-sm" href="<%= linkPrefix%>/status/all">
+                                ALL (4)
+                            </a>
 
-                        <a class="btn m-b-sm btn-default btn-sm" href="<%= systemConfig.prefixAdmin%>/items/active">
-                            ACTIVE (4)
-                        </a>
+                            <a class="btn m-b-sm btn-default btn-sm" href="<%= linkPrefix%>/status/active">
+                                ACTIVE (4)
+                            </a>
 
-                        <a class="btn m-b-sm btn-default btn-sm" href="<%= systemConfig.prefixAdmin%>/items/inactive">
-                            INACTIVE (0)
-                        </a>
+                            <a class="btn m-b-sm btn-default btn-sm" href="<%= linkPrefix%>/status/inactive">
+                                INACTIVE (0)
+                            </a>
 
-                    </div>
-                    <div class="col-sm-6">
-                        <form action="<%= systemConfig.prefixAdmin%>/item/all" method="GET">
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="search" placeholder="Search for..."
-                                    value="">
-                                <input type="hidden" value="all">
+                        </div>
+                        <!-- <div class="col-sm-6">
+                            <form action="<%= linkPrefix%>/all" method="GET">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="search" placeholder="Search for..."
+                                        value="">
+                                    <input type="hidden" value="all">
 
-                                <span class="input-group-btn">
-                                    <button class="btn btn-info" type="submit">Search</button>
-                                </span>
-                                <span class="input-group-btn">
-                                    <button class="btn btn-success" type="button"><a
-                                            href="<%= systemConfig.prefixAdmin%>/group/all">Clear</a></button>
-                                </span>
-                            </div>
-                        </form>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-info" type="submit">Search</button>
+                                    </span>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-success" type="button"><a
+                                                href="<%= linkPrefix%>">Clear</a></button>
+                                    </span>
+                                </div>
+                            </form>
 
+                        </div> -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
