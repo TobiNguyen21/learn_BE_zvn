@@ -1,9 +1,9 @@
 const { validationResult } = require('express-validator');
 
-const Item = require('./../schemas/items');
 const UtilsHelpers = require('./../helpers/utils');
 const ParamsHelpers = require('./../helpers/params');
 const systemConfig = require('./../configs/system');
+const items_Service = require('../services/items_Service');
 
 const linkIndex = `/${systemConfig.prefixAdmin}/items/`;
 const pageTitleIndex = 'Item Management';
@@ -34,9 +34,11 @@ module.exports = {
         let filter = { name: keyWord };// when currentStatus = all
         if (currentStatus !== 'all') filter.status = currentStatus;
 
-        pagination.totalItems = await Item.count(filter);
+        pagination.totalItems = await items_Service.getCountItems(filter);
         pagination.totalPages = Math.ceil(pagination.totalItems / pagination.limit);
-        let items = await Item.find(filter).sort({ ordering: 'asc' }).skip(offset).limit(pagination.limit);
+
+        let items = await items_Service.getItems(filter, offset, pagination.limit);
+
         let statusFilter = await UtilsHelpers.craeteFilterStatus(currentStatus);
 
         let message = req.flash('message');
@@ -61,7 +63,8 @@ module.exports = {
         let currentPage = +ParamsHelpers.getParamStatus(req.query, 'page', '1');
 
         try {
-            const result = await Item.updateOne({ _id: id }, { status: status });
+            const result = await items_Service.updateItem(id, { status: status });
+            console.log(`update success ${JSON.stringify(result)}`);
             req.flash('message', 'change status success');
         } catch (error) {
             req.flash('message', 'change status fail');
@@ -77,7 +80,7 @@ module.exports = {
         // console.log(`listId ${listId}`);
 
         try {
-            const result = await Item.updateMany({ _id: listId }, { status: currentStatus });
+            const result = await items_Service.updateMultiItems(listId, { status: currentStatus });
             req.flash('message', 'change multiple status succeed');
         } catch (error) {
             req.flash('message', 'change multiple status failed');
@@ -92,7 +95,7 @@ module.exports = {
         let id = ParamsHelpers.getParamStatus(req.params, 'id', '');
 
         try {
-            const result = await Item.deleteOne({ _id: id });
+            const result = await items_Service.deleteItem(id);
             req.flash('message', 'deleted element succeed');
         } catch (error) {
             req.flash('message', 'deleted element failed');
@@ -105,7 +108,7 @@ module.exports = {
         const listId = req.body.cid;
         console.log(`listID: ${listId}`);
         try {
-            const result = await Item.deleteMany({ _id: listId });
+            const result = await items_Service.deleteMultiItems(listId);
             req.flash('message', 'deleted multiple element succeed');
         } catch (error) {
             req.flash('message', 'deleted multiple element failed');
@@ -126,14 +129,15 @@ module.exports = {
 
         let countError = 0;
 
-        await listId.forEach(async (id, index) => {
+
+        for (let i = 0; i < listId.length; i++) {
             try {
-                await Item.updateOne({ _id: id }, { ordering: orderings[index] });
+                await items_Service.updateItem(listId[i], { ordering: orderings[i] });
             } catch (error) {
                 countError++;
                 console.log(error);
             }
-        });
+        }
 
         if (countError === 0) req.flash('message', 'change multi ordering succeed');
         else req.flash('message', 'change multi ordering failed');
@@ -145,7 +149,7 @@ module.exports = {
         let item = { name: '', ordering: 0, status: 'novalue' };
         let errors = null;
         if (id) {
-            item = await Item.findById(id);
+            item = await items_Service.getItemById(id);
             res.render(`${folderView}/form`, { pageTitle: pageTitleEdit, item, errors });
         }
         res.render(`${folderView}/form`, { pageTitle: pageTitleAdd, item, errors });
@@ -156,23 +160,21 @@ module.exports = {
         const errors = validationResult(req).errors;
         console.log(`ERR: `, errors);
 
-
         if (item.id) { // Edit
             if (errors.length !== 0) {
                 res.render(`${folderView}/form`, { pageTitle: pageTitleEdit, item, errors });
             } else {
                 console.log(`Data Edit: `, item);
-                await Item.updateOne({ _id: item.id }, { name: item.name, ordering: item.ordering, status: item.status });
+                await items_Service.updateItem(item.id, { name: item.name, ordering: item.ordering, status: item.status });
                 req.flash('message', 'edit item succeed');
             }
-
         } else { //Add
             if (errors.length !== 0) {
                 res.render(`${folderView}/form`, { pageTitle: pageTitleAdd, item, errors });
             } else {
                 delete item.id;
                 console.log(`Data Add: `, item);
-                await Item.create(item);
+                await items_Service.createItem(item);
                 req.flash('message', 'add new item succeed');
             }
         }

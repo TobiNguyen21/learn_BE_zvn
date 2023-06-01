@@ -11,7 +11,7 @@
 
     actions.forEach((action)=> {
     let link = systemConfig.prefixAdmin + '/' + collection + '/' + action.value;
-    xhtmlAction += `<option value="${link}">${action.name}</option>`;
+    xhtmlAction += `<option value="${link}" name="${action.name}">${action.name}</option>`;
     });
 
     return `<div class="zcontrols">

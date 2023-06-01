@@ -1,4 +1,4 @@
-const Item = require('./../schemas/items');
+const items_Service = require('./../services/items_Service');
 
 let craeteFilterStatus = async (currentStatus) => {
     //console.log("createFilterStatus");
@@ -15,9 +15,9 @@ let craeteFilterStatus = async (currentStatus) => {
 
             let count = 0;
             if (statusFilter[i].name.toLowerCase() === 'all') {
-                count = await Item.count({});
+                count = await items_Service.getCountItems({});
             } else {
-                count = await Item.count({ status: statusFilter[i].name.toLowerCase() });
+                count = await items_Service.getCountItems({ status: statusFilter[i].name.toLowerCase() });
             }
             statusFilter[i].count = count;
         }
