@@ -1,1 +1,1 @@
-Mananger Items version1.0
+Item Management version1.0
