@@ -1,0 +1,82 @@
+<% const ad=systemConfig.prefixAdmin%>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Form add item</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form role="form" action="/<%= ad%>/items/save" method="post" enctype="multipart/form-data">
+                        <div class="card-body">
+                            <div class="col-sm-8">
+                                <% if(errors!==null) {%>
+                                <div class="alert bg-warning" role="alert">
+                                    <ul>
+                                        <% errors.forEach(function(error) { %>
+                                        <li>
+                                            <%= error.msg %>
+                                        </li>
+                                        <% }) %>
+                                    </ul>
+                                </div>
+                                <% } %>
+                            </div>
+                            <div><input class="form-control" name="id" value="<%= item._id %>" type="hidden">
+                            </div>
+                            <!-- Name: -->
+                            <div class="form-group ">
+                                <label>Name</label>
+                                <input type="text" class="form-control" id="name" name="name"
+                                    placeholder="Enter name item" value="<%= item.name %>" onkeyup="ChangeToSlug();">
+                            </div>
+                            <!-- Slug -->
+                            <div class="form-group ">
+                                <label>Slug</label>
+                                <input type="text" class="form-control" id="slug" placeholder="Slug name" value="">
+                            </div>
+                            <!-- Ordering -->
+                            <div class="form-group ">
+                                <label>Ordering</label>
+                                <input class="form-control" type="number" name="ordering" value="<%= item.ordering %>">
+                            </div>
+                            <!-- Status -->
+                            <div class="form-group ">
+                                <label>Status</label>
+                                <select name="status" class="form-control">
+                                    <option value="novalue">Choose Status</option>
+                                    <option value="active" <%=(item.status=="active" ) ? 'selected="selected"' : ''
+                                            %>>Active</option>
+                                    <option value="inactive" <%=(item.status=="inactive" ) ? 'selected="selected"'
+                                            : '' %>>Inactive</option>
+                                </select>
+                            </div>
+                            <!-- File -->
+                            <div class="form-group ">
+                                <label>File</label>
+                                <div class="custom-file">
+                                    <input name="image" type="file" class="custom-file-input" id="customFile"
+                                        onchange=" handleInputChange(this)" accept="image/png, image/gif, image/jpeg"
+                                        value="">
+                                    <label class="custom-file-label" for="customFile" id="labelFile">Choose
+                                        file</label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+                            <div class="float-right">
+                                <button type="submit" class="btn btn-primary ">Submit</button>
+                                <a type="button" href="/<%= ad%>/items" class="btn btn-default">Cancel</a>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

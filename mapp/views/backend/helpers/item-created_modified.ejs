@@ -1,0 +1,9 @@
+<% itemTimeHelper =(user_name,time)=>{
+    const timeB = moment(time).format(systemConfig.format_long_time);
+    
+    return `<span class="ti-user" aria-hidden="true"></span>
+    ${user_name} <br />
+    <span class="ti-time" aria-hidden="true"></span>
+    ${timeB}`
+}
+%>

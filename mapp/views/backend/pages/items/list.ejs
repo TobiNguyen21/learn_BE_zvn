@@ -1,0 +1,146 @@
+<% - include('./../../helpers/action') %>
+<% - include('./../../helpers/filter-status') %>
+<% - include('./../../helpers/highlightKw') %>
+<% - include('./../../helpers/item-file') %>
+<% - include('./../../helpers/item-status') %>
+<% - include('./../../helpers/item-ordering') %>
+<% - include('./../../helpers/item-action') %>
+<% - include('./../../helpers/item-pagination') %>
+<% - include('./../../helpers/item-created_modified') %>
+
+<% const ad=systemConfig.prefixAdmin %>
+<% const collection="items" %>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <% if(msg.length>0 ) { %>
+                <div class="alert bg-success" role="alert">
+                    <span class="close-btn">&times;</span>
+                    <%= msg[0]%>
+                </div>
+                <% } %>
+
+                <div class="card">
+                    <div class="card-header">
+                        Search & Filter
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="status-list col-sm-6 pl0">
+                                <%- filterStatusHelper(statusFilter,keyWordSearch) %>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <form action="/<%= ad%>/<%= collection%>/status/<%=status%>" method="GET">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="search"
+                                            placeholder="Search for..." value=<%=keyWordSearch %>>
+                                        <input type="hidden" value="all">
+
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-success" type="submit">Search</button>
+                                        </span>
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" type="button"><a
+                                                    href="/<%= ad%>/<%= collection%>/status/<%=status%>">Clear</a></button>
+                                        </span>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">List</div>
+                    </div>
+
+                    <div class="card-body">
+                        <form class=" zt-form" id="zt-form" action="" method="post">
+                            <%- actionHelper() %>
+
+                            <div>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <input type="checkbox" class="cbAll" />
+                                            </th>
+                                            <th style="width: 10px">#</th>
+                                            <th class="text-center">
+                                                <a href="/<%= ad%>/<%= collection%>/sort/name/desc" class="title"
+                                                    style="color: black;">Name
+                                                    <i class="ti-arrow-down"></i>
+                                                </a>
+                                            </th>
+                                            <th style="width: 150px">Image
+                                            </th>
+                                            <th class="text-center">
+                                                <a href="#" class="title" style="color: black;">Status
+                                                    <i class="ti-exchange-vertical"></i>
+                                                </a>
+                                            </th>
+                                            <th class="text-center">
+                                                <a href="/<%= ad%>/<%= collection%>/sort/ordering/asc" class="title"
+                                                    style="color: black;">Ordering
+                                                    <i class="ti-arrow-down"></i>
+                                                </a>
+                                            </th>
+                                            <th>Created</th>
+                                            <th>Modified</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% listItems.forEach((item,index)=>{%>
+                                        <tr>
+                                            <td><input type="checkbox" name="cid" value="<%= item._id%>">
+                                            </td>
+                                            <td>
+                                                <%= index+1%>.
+                                            </td>
+                                            <td>
+                                                <%- highlightHelper(item.name,keyWordSearch)%>
+                                            </td>
+                                            <td>
+                                                <%- itemFileHelper(item.image,collection)%>
+                                            </td>
+                                            <td>
+                                                <%- itemStatusHelper(item._id,item.status)%>
+                                            </td>
+                                            <td>
+                                                <%- itemOrderingHelper(item._id,item.ordering)%>
+
+                                            </td>
+                                            <td>
+                                                <%- itemTimeHelper(item.created.user_name,item.created.time) %>
+                                            </td>
+                                            <td>
+                                                <%- itemTimeHelper(item.modified.user_name,item.modified.time) %>
+                                            </td>
+                                            <td>
+                                                <%- itemActionHelper(item._id,collection)%>
+                                            </td>
+                                        </tr>
+                                        <% }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer clearfix">
+                        <%- paginationHelper(pagination,keyWordSearch,status)%>
+                    </div>
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+    </div>
+</section>
