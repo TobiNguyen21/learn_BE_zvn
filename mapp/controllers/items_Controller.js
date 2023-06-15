@@ -24,10 +24,10 @@ module.exports = {
         const sort_field_name = req.session.fieldName ? req.session.fieldName : 'ordering';
         const sort_type = req.session.sortType ? req.session.sortType : 'asc';
 
-        let sortElemet = {};
-        sortElemet[sort_field_name] = sort_type;
+        let sortElement = {};
+        sortElement[sort_field_name] = sort_type;
 
-        console.log(sortElemet);
+        console.log("sort: ", sortElement);
 
         //Search config
         let filter = { "name": new RegExp(keyWordSearch, 'i') };
@@ -42,7 +42,7 @@ module.exports = {
         let pagination = await utilsHelpers.createPaginationItems(filter, currentPage);
 
         // get Items - service
-        const items = await main_Service.getItems(filter, pagination, sortElemet);
+        const items = await main_Service.getItems(filter, pagination, sortElement);
 
         console.log(items);
 
@@ -54,11 +54,13 @@ module.exports = {
         res.render(view_list, {
             title: 'List Items',
             listItems: items,
-            statusFilter: statusFilter,
-            keyWordSearch: keyWordSearch,
-            status: status,
-            msg: msg,
-            pagination
+            statusFilter,
+            keyWordSearch,
+            status,
+            msg,
+            pagination,
+            sort_field_name,
+            sort_type
         });
     },
     getFormItems: async (req, res) => {
@@ -67,11 +69,13 @@ module.exports = {
         systemConfig.viewStatusActive = 'form';     // view sidebar-menu: active form
 
         const id = req.params.id;
-        let item = { name: '', status: 'novalue', ordering: 0 };
+        let item = { name: '', status: 'novalue', ordering: 0, image: 'Choose file' };
 
         let errors = null;
 
         if (id) item = await main_Service.getItemById(id);
+
+        console.log(item);
 
         res.render(view_form, {
             title: 'Form',
@@ -132,6 +136,7 @@ module.exports = {
 
         const errors = validationResult(req).errors;
         console.log(`validateResult`, errors);
+
 
         if (errors.length !== 0) {
             if (req.file) fileHelpers.remove(`/public/uploads/${main}`, req.file.filename);

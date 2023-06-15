@@ -1,0 +1,23 @@
+<% sortHelper = (col_name ,collection , sort)=>{
+    let field_name = col_name.toLowerCase();
+    let sort_type = 'asc' ;
+    let icon_class = "ti-exchange-vertical";
+
+    if(field_name == "created"){
+        field_name = "createdAt";
+    }else if(field_name == "modified"){
+        field_name = "updateAt";
+    }
+
+    if(field_name == sort.field_name_sorted){
+        sort_type = (sort.type_sorted == 'asc')?'desc' :'asc';
+        icon_class = (sort.type_sorted == 'asc') ? "ti-arrow-up" :"ti-arrow-down" ;
+    }
+    
+
+    const ad = systemConfig.prefixAdmin;
+    const link = `/${ad}/${collection}/sort/${field_name}/${sort_type}`;
+
+    return `<a href=${link} class="title" style="color: black;">${col_name}<i class=${icon_class}></i></a>`
+} 
+%>

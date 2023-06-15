@@ -56,12 +56,18 @@
                             <!-- File -->
                             <div class="form-group ">
                                 <label>File</label>
+                                <% let linkImage = 'C:\\fakepath\\'; 
+                                if(item.image != 'Choose file') {
+                                    linkImage += item.image;
+                                 } 
+                                 console.log(linkImage);
+                                %>
                                 <div class="custom-file">
                                     <input name="image" type="file" class="custom-file-input" id="customFile"
                                         onchange=" handleInputChange(this)" accept="image/png, image/gif, image/jpeg"
-                                        value="">
-                                    <label class="custom-file-label" for="customFile" id="labelFile">Choose
-                                        file</label>
+                                        value="<%= linkImage %>">
+                                    <label class="custom-file-label" for="customFile"
+                                        id="labelFile"><%= item.image %></label>
                                 </div>
                             </div>
                         </div>

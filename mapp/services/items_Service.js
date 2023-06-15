@@ -49,9 +49,9 @@ module.exports = {
         }
     },
     // Interact Mongodb
-    getItems: async (filter, { offset, limit }, sortElemet) => {
+    getItems: async (filter, { offset, limit }, sortElement) => {
         try {
-            return await Item.find(filter).sort(sortElemet).skip(offset).limit(limit);
+            return await Item.find(filter).sort(sortElement).skip(offset).limit(limit);
         } catch (error) {
             console.log(`Get items fail: ${error}`);
             return null;

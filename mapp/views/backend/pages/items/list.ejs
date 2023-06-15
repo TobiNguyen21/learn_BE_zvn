@@ -7,9 +7,11 @@
 <% - include('./../../helpers/item-action') %>
 <% - include('./../../helpers/item-pagination') %>
 <% - include('./../../helpers/item-created_modified') %>
+<% - include('./../../helpers/sort') %>
 
 <% const ad=systemConfig.prefixAdmin %>
 <% const collection="items" %>
+<% const sort = {field_name_sorted: sort_field_name, type_sorted:sort_type}  %>
 
 <section class="content">
     <div class="container-fluid">
@@ -74,26 +76,20 @@
                                             </th>
                                             <th style="width: 10px">#</th>
                                             <th class="text-center">
-                                                <a href="/<%= ad%>/<%= collection%>/sort/name/desc" class="title"
-                                                    style="color: black;">Name
-                                                    <i class="ti-arrow-down"></i>
-                                                </a>
+                                                <%- sortHelper("Name" ,collection , sort) %>
                                             </th>
                                             <th style="width: 150px">Image
                                             </th>
                                             <th class="text-center">
-                                                <a href="#" class="title" style="color: black;">Status
-                                                    <i class="ti-exchange-vertical"></i>
-                                                </a>
+                                                <%- sortHelper("Status" ,collection , sort) %>
                                             </th>
                                             <th class="text-center">
-                                                <a href="/<%= ad%>/<%= collection%>/sort/ordering/asc" class="title"
-                                                    style="color: black;">Ordering
-                                                    <i class="ti-arrow-down"></i>
-                                                </a>
+                                                <%- sortHelper("Ordering" ,collection , sort) %>
                                             </th>
-                                            <th>Created</th>
-                                            <th>Modified</th>
+                                            <th class="text-center"> <%- sortHelper("Created" ,collection , sort) %>
+                                            </th>
+                                            <th class="text-center"> <%- sortHelper("Modified" ,collection , sort) %>
+                                            </th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>

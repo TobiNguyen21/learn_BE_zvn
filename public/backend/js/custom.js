@@ -270,6 +270,7 @@ function ChangeToSlug() {
 }
 
 function handleInputChange(e) {
+    console.log(e.value);
     if (e.files[0]) {
         const img = e.files[0];
         document.getElementById("labelFile").innerHTML = img.name;
