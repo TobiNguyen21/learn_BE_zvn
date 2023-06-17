@@ -1,10 +1,10 @@
-<% paginationHelper=(pagination,keyWordSearch,status)=>{
+<% paginationHelper=(collection,pagination,keyWordSearch,status)=>{
     //console.log({pagination,keyWordSearch,status});
 
     const {totalItems,totalPages,limit,currentPage,pageRanges}=pagination;
     const ad = systemConfig.prefixAdmin;
 
-    let link = `/${ad}/items/status/${status}`;
+    let link = `/${ad}/${collection}/status/${status}`;
     if(keyWordSearch !== '') link += '?keyWordSearch=' + keyWordSearch + '&page=';
     else link += '?page=';
 

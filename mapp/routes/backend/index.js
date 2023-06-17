@@ -13,6 +13,7 @@ router.use('/', (req, res, next) => {
 router.use('/dashboard', require('./dashboard'));
 router.use('(/home)?', require('./home'));
 router.use('/items', require('./items'));
+router.use('/groups', require('./groups'));
 
 router.use('/demo', require('./demo/demo'));
 

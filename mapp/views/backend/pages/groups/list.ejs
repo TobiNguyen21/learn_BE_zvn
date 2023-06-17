@@ -10,7 +10,7 @@
 <% - include('./../../helpers/sort') %>
 
 <% const ad=systemConfig.prefixAdmin %>
-<% const collection="items" %>
+<% const collection="groups" %>
 <% const sort = {field_name_sorted: sort_field_name, type_sorted:sort_type}  %>
 
 <section class="content">
@@ -67,7 +67,7 @@
 
                     <div class="card-body">
                         <form class=" zt-form" id="zt-form" action="" method="post">
-                            <%- actionHelper() %>
+                            <%- actionHelper(collection) %>
 
                             <div>
                                 <table class="table table-bordered">

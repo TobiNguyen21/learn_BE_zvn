@@ -126,7 +126,7 @@ $(document).ready(function () {
     }
 });
 
-function handleItemStatusClick(ad, id, status) {
+function handleItemStatusClick(collection, ad, id, status) {
     console.log(`Hello change status`);
     // console.log({ ad, id, status });
 
@@ -137,7 +137,7 @@ function handleItemStatusClick(ad, id, status) {
         timer: 3000
     });
 
-    const link = `/${ad}/items/change-status-ajax/${id}/${status}`
+    const link = `/${ad}/${collection}/change-status-ajax/${id}/${status}`
 
     $.ajax({
         type: "GET",
@@ -169,7 +169,7 @@ function handleItemStatusClick(ad, id, status) {
     });
 }
 
-function handleOrderingChange(ad, id, ordering) {
+function handleOrderingChange(collection, ad, id, ordering) {
     console.log(`Hello change ordering`);
     // console.log({ ad, id, ordering });
 
@@ -184,7 +184,7 @@ function handleOrderingChange(ad, id, ordering) {
     const newValue = parseFloat(input_tag.value);
 
     if (!isNaN(newValue)) {
-        const link = `/${ad}/items/change-ordering-ajax/${id}/${newValue}`;
+        const link = `/${ad}/${collection}/change-ordering-ajax/${id}/${newValue}`;
         $.ajax({
             type: "get",
             url: link,
@@ -206,8 +206,8 @@ function handleOrderingChange(ad, id, ordering) {
     }
 }
 
-function deleteConfirm(ad, id) {
-    const link = `/${ad}/items/delete/${id}`;
+function deleteConfirm(ad, id, collection) {
+    const link = `/${ad}/${collection}/delete/${id}`;
 
     console.log(link);
 

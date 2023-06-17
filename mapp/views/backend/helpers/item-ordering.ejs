@@ -1,8 +1,8 @@
-<% itemOrderingHelper=(id,ordering)=>{
+<% itemOrderingHelper=(collection,id,ordering)=>{
     const ad = systemConfig.prefixAdmin;
     let func = `handleOrderingChange('${ad}','${id}','${ordering}')`;
 
-    return `<input onchange="handleOrderingChange('${ad}','${id}','${ordering}')" type="number" value="${ordering}"
+    return `<input onchange="handleOrderingChange('${collection}','${ad}','${id}','${ordering}')" type="number" value="${ordering}"
         class="text-center ordering" id="${id}_ordering">`;
     }
     %>

@@ -1,7 +1,7 @@
-<% itemStatusHelper=(id,status)=>{
+<% itemStatusHelper=(collection,id,status)=>{
     const ad = systemConfig.prefixAdmin;
     let btnStatus = (status == 'active') ? 'btn-success':'btn-warning' ;
-    let href_func = `href= "javascript: handleItemStatusClick('${ad}','${id}','${status}')"`;
+    let href_func = `href= "javascript: handleItemStatusClick('${collection}','${ad}','${id}','${status}')"`;
     let iconStatus = (status == 'active') ? 'ti-check' : 'ti-minus';
 
     return `<a id="${id}_status" ${href_func} style="display: flex; justify-content: center; align-items: center;">

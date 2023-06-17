@@ -10,6 +10,12 @@
             name: "Widgets",
             parent: false, openMenuClass: false, link: "#", class_li: "nav-item ", class_i: "nav-icon ti-layout-grid3",
             activeClass: false
+        },
+        {
+            name: "Groups", parent: true, openMenuClass: false, class_li: "nav-item ", class_i: "nav-icon ti-dashboard", activeClass: false,
+            children: [
+            {name: "List", link: `/${ad}/groups`,activeClass: false},
+            {name: "Form", link: `/${ad}/groups/form`, activeClass: false }]
         }
     ]; %>
 
@@ -36,8 +42,7 @@
             <% if(menu.children) { %>
             <ul class="nav nav-treeview">
                 <% menu.children.forEach(menuChil=> { %>
-                <% menuChil.activeClass=(systemConfig.viewStatusActive==menuChil.name.toLowerCase())?
-                                                    true : false; %>
+                <% menuChil.activeClass=(systemConfig.viewStatusActive==menuChil.name.toLowerCase() && menu.openMenuClass )?true : false; %>
                 <li class="nav-item">
                     <a href="<%= menuChil.link %>"
                         class="nav-link <%= (menuChil.activeClass) ? 'active':'inactive' %> ">

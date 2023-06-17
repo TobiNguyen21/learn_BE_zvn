@@ -1,4 +1,4 @@
-const items_Service = require('./../services/items_Service');
+const main_Service = require('./../services/groups_Service');
 const craeteFilterStatus = async (currentStatus) => {
     let statusFilter = [
         { name: 'all', count: 0, class: 'btn-success' },
@@ -11,7 +11,7 @@ const craeteFilterStatus = async (currentStatus) => {
     }
 
     for (const status of statusFilter) {
-        status.count = await items_Service.countItemsByStatus(status.name.toLowerCase());
+        status.count = await main_Service.countItemsByStatus(status.name.toLowerCase());
     }
 
     return statusFilter;
@@ -27,7 +27,7 @@ const createPaginationItems = async (filter, currentPage) => {
         offset: 0
     };
     pagination.offset = (pagination.currentPage - 1) * pagination.limit;
-    pagination.totalItems = await items_Service.countItems(filter);
+    pagination.totalItems = await main_Service.countItems(filter);
     pagination.totalPages = Math.ceil(pagination.totalItems / pagination.limit);
 
     return pagination;

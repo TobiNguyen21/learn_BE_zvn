@@ -1,23 +1,23 @@
-<% actionHelper=()=> {
+<% actionHelper=(collection)=> {
     let actions = [
     { value: "", name: "Bulk Action" },
     { value: "change-status/active", name: "Active" },
     { value: "change-status/inactive", name: "InActive" },
     { value: "change-ordering/", name: "Change Ordering" },
-    { value: "delete/", name: "Delete" },
+    { value: "delete/", name: "Delete" },   
     ];
     let xhtmlAction = '';
     let linkAddNew = '#';
 
     actions.forEach((action) => {
-    let link = systemConfig.prefixAdmin + '/' + 'items' + '/' + action.value;
+    let link = systemConfig.prefixAdmin + '/' + collection + '/' + action.value;
     xhtmlAction += `<option value="/${link}" name="${action.name}">${action.name}</option>`;
     });
 
     return `
     <div>
         <div class="mb-2">
-            <a href="/admin/items/form" class="btn btn-warning btn-addNew" data-sortOrder>Add New</a>
+            <a href="/admin/${collection}/form" class="btn btn-warning btn-addNew" data-sortOrder>Add New</a>
             <div class="float-right">
                 <select name="action" class="custom-select" style="width: auto;">
                     ${xhtmlAction}
@@ -28,29 +28,3 @@
         </div>
     </div>`;
     } %>
-
-<!--  <div>
-        <div class="mb-2">
-            <a href="/admin/items/form" class="btn btn-warning btn-addNew">Add New
-            </a>
-            <div class="float-right">
-                <select name="action" class="custom-select" style="width: auto;" data-sortOrder>
-                    <option value="">Bulk Action</option>
-                    <option value="admin123/item/change-status/active">
-                        Active
-                    </option>
-                    <option value="admin123/item/change-status/inactive">
-                        InActive
-                    </option>
-                    <option value="admin123/item/save-ordering/">
-                        Change Ordering
-                    </option>
-                    <option value="admin123/item/delete/">
-                        Delete
-                    </option>
-                </select>
-                <button class="btn btn-info btnAction" type="button" id="btn-action" value="btnAction"
-                    disabled>Apply</button>
-            </div>
-        </div>
-    </div> -->

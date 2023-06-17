@@ -1,11 +1,11 @@
-<% filterStatusHelper=(statusFilter,keyWordSearch)=> {
+<% filterStatusHelper=(collection,statusFilter,keyWordSearch)=> {
     const ad = systemConfig.prefixAdmin
     let xhtml = ``;
     let searchLink = (keyWordSearch!=='')? `?search=${keyWordSearch}`:``;
 
     statusFilter.forEach((status)=>{
     xhtml += `<a class="btn m-b-sm ${status.class} btn-sm"
-        href="/${ad}/items/status/${status.name.toLowerCase()}${searchLink}">
+        href="/${ad}/${collection}/status/${status.name.toLowerCase()}${searchLink}">
         ${status.name} (${status.count})
     </a>`;
     })
