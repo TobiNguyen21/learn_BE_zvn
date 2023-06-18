@@ -1,3 +1,6 @@
+<% - include('./../../helpers/item-file') %>
+
+<% const collection = "groups"  %>
 <% const ad=systemConfig.prefixAdmin%>
 <section class="content">
     <div class="container-fluid">
@@ -5,11 +8,12 @@
             <div class="col-md-8 offset-md-2">
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Form add item</h3>
+                        <h3 class="card-title">Form add <%= collection %></h3>
                     </div>
                     <!-- /.card-header -->
                     <!-- form start -->
-                    <form role="form" action="/<%= ad%>/groups/save" method="post" enctype="multipart/form-data">
+                    <form role="form" action="/<%= ad%>/<%= collection%>/save" method="post"
+                        enctype="multipart/form-data">
 
                         <div class="card-body">
                             <!-- Err notify -->
@@ -62,19 +66,14 @@
                             <!-- File -->
                             <div class="form-group ">
                                 <label>File</label>
-                                <% let linkImage = 'C:\\fakepath\\'; 
-                                if(item.image != 'Choose file') {
-                                    linkImage += item.image;
-                                 } 
-                                 console.log(linkImage);
-                                %>
                                 <div class="custom-file">
                                     <input name="image" type="file" class="custom-file-input" id="customFile"
                                         onchange=" handleInputChange(this)" accept="image/png, image/gif, image/jpeg"
-                                        value="<%= linkImage %>">
+                                        value="">
                                     <label class="custom-file-label" for="customFile"
                                         id="labelFile"><%= item.image %></label>
                                 </div>
+                                <%- itemFileHelper(item.image,collection)%>
                             </div>
                         </div>
                         <!-- /.card-body -->
@@ -82,8 +81,9 @@
                         <!-- Action -->
                         <div class="card-footer">
                             <div class="float-right">
+                                <input name="image_old" value="<%= item.image %>" type="hidden" />
                                 <button type="submit" class="btn btn-primary ">Submit</button>
-                                <a type="button" href="/<%= ad%>/groups" class="btn btn-default">Cancel</a>
+                                <a type="button" href="/<%= ad%>/<%= collection %>" class="btn btn-default">Cancel</a>
                             </div>
                         </div>
 

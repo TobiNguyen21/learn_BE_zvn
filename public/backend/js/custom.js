@@ -148,9 +148,9 @@ function handleItemStatusClick(collection, ad, id, status) {
                 const a_tag = document.getElementById(`${id}_status`);
                 const span_tag = a_tag.querySelector('span');
 
-                a_tag.href = `javascript: handleItemStatusClick('${ad}','${id}','${res.statusNew}')`;
+                a_tag.href = `javascript: handleItemStatusClick('${ad}','${id}','${res.newStatus}')`;
 
-                const iconStatus = (res.statusNew == 'active') ? 'ti-check' : 'ti-minus';
+                const iconStatus = (res.newStatus == 'active') ? 'ti-check' : 'ti-minus';
                 span_tag.innerHTML = `<i class="${iconStatus}"></i>`;
 
                 if (span_tag.classList.contains('btn-success')) {

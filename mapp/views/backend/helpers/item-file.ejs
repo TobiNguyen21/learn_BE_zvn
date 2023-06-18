@@ -1,5 +1,7 @@
 <% itemFileHelper=(image,collection)=>{
-    return `<div class="product-image-thumb">
-        <img src="/uploads/${collection}/${image}" alt="Image">
+    image = (image == 'Choose file') ? '':image;
+    let linkToImage = (image) ? `/uploads/${collection}/${image}` : `/uploads/error/error_image.png`;
+    return `<div  class="product-image-thumb">
+        <img src="${linkToImage}" alt="Image" style="height: 50px;width: 100px;">
     </div>`
     }%>

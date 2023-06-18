@@ -16,7 +16,7 @@ module.exports = {
         systemConfig.viewMenuOpen = main;        // view sidebar-menu: open
         systemConfig.viewStatusActive = 'list';     // view sidebar-menu: active list
 
-        console.log(req.session);
+        //console.log(req.session);
 
         const status = req.params.status ? req.params.status : 'all';
         const keyWordSearch = req.query.search ? req.query.search : '';
@@ -27,25 +27,26 @@ module.exports = {
         let sortElement = {};
         sortElement[sort_field_name] = sort_type;
 
-        console.log("sort: ", sortElement);
+        //console.log("sort: ", sortElement);
 
         //Search config
         let filter = { "name": new RegExp(keyWordSearch, 'i') };
 
         //View ejs status-filter
-        let statusFilter = await utilsHelpers.craeteFilterStatus(status);
+        let statusFilter = await utilsHelpers.craeteFilterStatus(status, main);
 
         // set filter for get item
         if (status && status !== 'all') filter.status = status;
 
-        //Pagination
-        let pagination = await utilsHelpers.createPaginationItems(filter, currentPage);
+        // Pagination obj
+        let pagination = await utilsHelpers.createPaginationItems(filter, currentPage, main);
 
         // get Items - service
         const items = await main_Service.getItems(filter, pagination, sortElement);
 
-        console.log(items);
+        //console.log(items);
 
+        // notification
         let msg = req.flash("msg");
 
         console.log(`Page ${currentPage}`);
@@ -69,19 +70,75 @@ module.exports = {
         systemConfig.viewStatusActive = 'form';     // view sidebar-menu: active form
 
         const id = req.params.id;
-        let item = { name: '', status: 'novalue', ordering: 0, image: 'Choose file' };
+        let item = { name: '', status: 'novalue', ordering: 0, image: 'Choose file' };  // Value item init
 
         let errors = null;
 
-        if (id) item = await main_Service.getItemById(id);
+        if (id) item = await main_Service.getItemById(id);  // Case edit item
 
-        console.log(item);
+        //console.log(item);
 
         res.render(view_form, {
             title: 'Form',
             item: item,
             errors: errors
         });
+    },
+    postSaveItem: async (req, res) => {
+        let item = req.body; // {name,ordering,status,image_old?}
+
+        const errors = validationResult(req).errors;
+        if (req.errors) {
+            errors.push(...req.errors);
+        }
+        console.log(`validateResult: `, errors);
+
+        if (errors.length !== 0) { // error
+            if (req.file) fileHelpers.remove(`/public/uploads/${main}`, req.file.filename);
+            res.render(view_form, {
+                title: 'Form',
+                item: item,
+                errors: errors
+            });
+        } else { // no error
+            if (item.id) { //edit
+                if (req.file) {
+                    item.image = req.file.filename;
+                    fileHelpers.remove(`/public/uploads/${main}`, item.image_old);
+                } else {
+                    item.image = item.image_old;
+                }
+
+                const dataUpdate = {
+                    name: item.name,
+                    status: item.status,
+                    ordering: item.ordering,
+                    image: item.image,
+                    modified: {
+                        user_id: 0,
+                        user_name: "admin",
+                        time: Date.now()
+                    }
+                }
+
+                const resultUpdateItem = await main_Service.updateItem(item.id, dataUpdate);
+                console.log(`Update item: ${resultUpdateItem}`);
+                req.flash('msg', 'edit item succeed');
+
+            } else { //add
+                item.image = (req.file) ? req.file.filename : '';
+                item.created = {
+                    user_id: 0,
+                    user_name: "admin",
+                    time: Date.now()
+                };
+
+                const resultCreateItem = await main_Service.postCreateItem(item);
+                console.log(`Create item: ${resultCreateItem}`);
+                req.flash('msg', 'create item succeed');
+            }
+            res.redirect(linkIndex);
+        }
     },
     getChangeStatusItem: async (req, res) => {
         console.log(`-> Get change-status by id`);
@@ -91,9 +148,9 @@ module.exports = {
 
         try {
             if (id && currentStatus) {
-                const statusNew = (currentStatus == 'active') ? 'inactive' : 'active';
+                const newStatus = (currentStatus == 'active') ? 'inactive' : 'active';
                 const dataUpdate = {
-                    status: statusNew,
+                    status: newStatus,
                     modified: {
                         user_id: 0,
                         user_name: "admin",
@@ -102,10 +159,10 @@ module.exports = {
                 }
                 await main_Service.updateStatus(id, dataUpdate);
                 //req.flash("msg", "status change successfull");
-                res.send({ success: true, statusNew: statusNew });
+                res.send({ success: true, newStatus: newStatus });
             }
         } catch (error) {
-            res.send({ success: false, statusNew: null });
+            res.send({ success: false, newStatus: null });
         }
     },
     getChangeOrderingItem: async (req, res) => {
@@ -129,56 +186,6 @@ module.exports = {
             }
         } catch (error) {
             res.send({ success: false });
-        }
-    },
-    postSaveItem: async (req, res) => {
-        let item = req.body;
-
-        const errors = validationResult(req).errors;
-        console.log(`validateResult`, errors);
-
-
-        if (errors.length !== 0) {
-            if (req.file) fileHelpers.remove(`/public/uploads/${main}`, req.file.filename);
-            res.render(view_form, {
-                title: 'Form',
-                item: item,
-                errors: errors
-            });
-        } else {
-            if (item.id) { //edit
-                const item_old = await main_Service.getItemById(item.id);
-                fileHelpers.remove(`/public/uploads/${main}`, item_old.image);
-                item.image = req.file.filename;
-
-                const dataUpdate = {
-                    name: item.name,
-                    status: item.status,
-                    ordering: item.ordering,
-                    image: item.image,
-                    modified: {
-                        user_id: 0,
-                        user_name: "admin",
-                        time: Date.now()
-                    }
-                }
-
-                const resultUpdateItem = await main_Service.updateItem(item.id, dataUpdate);
-                console.log(`Update item: ${resultUpdateItem}`);
-                req.flash('msg', 'edit item succeed');
-            } else { //add
-                item.image = req.file.filename;
-                item.created = {
-                    user_id: 0,
-                    user_name: "admin",
-                    time: Date.now()
-                };
-
-                const resultCreateItem = await main_Service.postCreateItem(item);
-                console.log(`Create item: ${resultCreateItem}`);
-                req.flash('msg', 'create item succeed');
-            }
-            res.redirect(linkIndex);
         }
     },
     getDeleteItem: async (req, res) => {

@@ -1,5 +1,8 @@
-const main_Service = require('./../services/groups_Service');
-const craeteFilterStatus = async (currentStatus) => {
+const link_To_Service = './../services/';
+
+const craeteFilterStatus = async (currentStatus, collection) => {
+    const main_Service = require(link_To_Service + collection + '_Service');
+
     let statusFilter = [
         { name: 'all', count: 0, class: 'btn-success' },
         { name: 'active', count: 0, class: 'btn-default' },
@@ -17,7 +20,9 @@ const craeteFilterStatus = async (currentStatus) => {
     return statusFilter;
 }
 
-const createPaginationItems = async (filter, currentPage) => {
+const createPaginationItems = async (filter, currentPage, collection) => {
+    const main_Service = require(link_To_Service + collection + '_Service');
+
     let pagination = {
         totalItems: 1,
         totalPages: 1,
